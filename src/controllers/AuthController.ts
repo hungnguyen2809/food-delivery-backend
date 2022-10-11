@@ -2,9 +2,10 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { JWT } from 'src/middleware';
 import { UserModel } from 'src/models';
+import { RefreshTokenType } from 'src/types';
 import { EntityResponse } from 'src/utils';
 
-let listRefreshToken: RefreshToken[] = [];
+let listRefreshToken: RefreshTokenType[] = [];
 
 export const AuthController = {
   /** Register User */
@@ -54,7 +55,7 @@ export const AuthController = {
       const token = JWT.sign({ id, username, email, admin });
       const refreshToken = JWT.signRefresh({ id, username, email, admin });
 
-      listRefreshToken.push({ username, refreshToken });
+      listRefreshToken.push({ username: username, token: refreshToken });
 
       return res.json(EntityResponse.sucess({ id, username, admin, email, token, refreshToken }));
     } catch (error) {

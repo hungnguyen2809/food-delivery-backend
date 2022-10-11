@@ -1,11 +1,11 @@
 import { logger } from './logger';
 
 export const EntityResponse = {
-  sucess: (data: any = null, message: any = 'OK', status: number = 200) => {
-    return { error: false, status, message, data };
+  sucess: (data: any = null, message: any = 'OK', code: number = 200) => {
+    return { status: false, code, message, data };
   },
-  error: (message: any = 'ERROR', status: number = 200, data: any = null) => {
+  error: (message: any = 'ERROR', code: number = 200, data: any = null) => {
     logger.error(message);
-    return { error: true, status, message, data };
+    return { status: true, code, message, data };
   },
 };
