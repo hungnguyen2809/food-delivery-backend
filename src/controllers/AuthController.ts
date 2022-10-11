@@ -4,7 +4,7 @@ import { JWT } from 'src/middleware';
 import { UserModel } from 'src/models';
 import { EntityResponse } from 'src/utils';
 
-const listRefreshToken: string[] = [];
+let listRefreshToken: RefreshToken[] = [];
 
 export const AuthController = {
   /** Register User */
@@ -14,6 +14,11 @@ export const AuthController = {
 
       if (!username || !password || !email) {
         return res.json(EntityResponse.error('username, password, email is required'));
+      }
+
+      const findUser = await UserModel.findOne({ username });
+      if (findUser) {
+        return res.json(EntityResponse.error('username already exists'));
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -49,9 +54,24 @@ export const AuthController = {
       const token = JWT.sign({ id, username, email, admin });
       const refreshToken = JWT.signRefresh({ id, username, email, admin });
 
-      listRefreshToken.push(refreshToken);
+      listRefreshToken.push({ username, refreshToken });
 
       return res.json(EntityResponse.sucess({ id, username, admin, email, token, refreshToken }));
+    } catch (error) {
+      return res.json(EntityResponse.error(error));
+    }
+  },
+  /** Login User */
+  logoutUser: async (req: Request, res: Response) => {
+    try {
+      const { username } = req.body;
+      if (!username) {
+        return res.json(EntityResponse.error('username is required'));
+      }
+
+      listRefreshToken = listRefreshToken.filter((token) => token.username !== username);
+
+      return res.json(EntityResponse.sucess());
     } catch (error) {
       return res.json(EntityResponse.error(error));
     }

@@ -5,6 +5,8 @@ import { logger } from 'src/utils';
 dotenv.config();
 const MONGODB_URL = process.env.MONGODB_URL;
 
+const connection = mongoose.connection;
+
 const connect = (callback?: () => void) => {
   if (!MONGODB_URL) {
     logger.warn('URL Mongo is undefined: ', MONGODB_URL);
@@ -23,4 +25,5 @@ const connect = (callback?: () => void) => {
 
 export const MONGO_DB = {
   connect,
+  connection,
 };
