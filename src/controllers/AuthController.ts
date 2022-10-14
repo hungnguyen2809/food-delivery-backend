@@ -29,8 +29,8 @@ export const AuthController = {
       const user = await newUser.save();
 
       return res.json(EntityResponse.sucess(user));
-    } catch (error) {
-      return res.json(EntityResponse.error(error));
+    } catch (error: any) {
+      return res.json(EntityResponse.error(error?.message));
     }
   },
   /** Login User */
@@ -58,8 +58,8 @@ export const AuthController = {
       listRefreshToken.push({ username: username, token: refreshToken });
 
       return res.json(EntityResponse.sucess({ id, username, admin, email, token, refreshToken }));
-    } catch (error) {
-      return res.json(EntityResponse.error(error));
+    } catch (error: any) {
+      return res.json(EntityResponse.error(error?.message));
     }
   },
   /** Login User */
@@ -73,8 +73,8 @@ export const AuthController = {
       listRefreshToken = listRefreshToken.filter((token) => token.username !== username);
 
       return res.json(EntityResponse.sucess());
-    } catch (error) {
-      return res.json(EntityResponse.error(error));
+    } catch (error: any) {
+      return res.json(EntityResponse.error(error?.message));
     }
   },
 };

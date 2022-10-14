@@ -15,7 +15,7 @@ const connect = (callback?: () => void) => {
 
   return mongoose.connect(MONGODB_URL, (error) => {
     if (error) {
-      logger.warn('Connected MongoDB Error: ', error);
+      logger.warn('Connected MongoDB Error: ', error.message);
       return;
     }
     logger.log('Connected MongoDB');
