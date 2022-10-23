@@ -15,6 +15,10 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 
+//Static file
+app.use('/static', express.static('static'));
+
+//Routes
 app.use(rotues);
 
 app.get('/', (req, res) => {

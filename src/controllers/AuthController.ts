@@ -22,6 +22,11 @@ export const AuthController = {
         return res.json(EntityResponse.error('username already exists'));
       }
 
+      const findEmail = await UserModel.findOne({ email });
+      if (findEmail) {
+        return res.json(EntityResponse.error('email already exists'));
+      }
+
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(password, salt);
 
