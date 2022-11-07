@@ -47,7 +47,7 @@ export const CartController = {
   },
   removeFormCart: async (req: Request, res: Response) => {
     try {
-      const { foodId } = req.body;
+      const { foodId } = req.query;
       const userId = get(req, 'userInfo.username');
 
       if (!foodId || !userId) {
