@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const BooksSchema = new mongoose.Schema(
+const FoodsSchema = new mongoose.Schema(
   {
     id: { type: String },
     restaurantId: { type: String },
@@ -14,4 +14,4 @@ const BooksSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const BooksModel = mongoose.model('Books', BooksSchema);
+export const FoodsModel = mongoose.model('foods', FoodsSchema);

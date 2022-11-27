@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { RestaurentController, UserController } from 'src/controllers';
+import { RestaurentController } from 'src/controllers';
 
 const restaurentRouter = Router();
 
