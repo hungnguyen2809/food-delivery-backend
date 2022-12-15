@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { split } from 'lodash';
-import { HEADER_VERIFY_TOKEN } from 'src/constants';
+import { HEADER_VERIFY_TOKEN, USER_INFO_KEY } from 'src/constants';
 import { EntityResponse, logger } from 'src/utils';
 
 dotenv.config();
@@ -41,7 +41,7 @@ export const JWT = {
       const verified = jwt.verify(token, SECRET_KEY as string);
 
       //@ts-ignore
-      req.userInfo = verified; //gán thông tin đã xác thực cho request => các controller cần xử dụng không cần decode lại
+      req[USER_INFO_KEY] = verified; //gán thông tin đã xác thực cho request => các controller cần xử dụng không cần decode lại
       next();
     } catch (error) {
       return res.status(403).json(EntityResponse.error('Invalid Token', 403));

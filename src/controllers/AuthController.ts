@@ -2,19 +2,18 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { JWT } from 'src/middleware';
 import { UserModel } from 'src/models';
-import { RefreshTokenType } from 'src/types';
 import { EntityResponse } from 'src/utils';
 
-let listRefreshToken: RefreshTokenType[] = [];
+// let listRefreshToken: RefreshTokenType[] = [];
 
 export const AuthController = {
   /** Register User */
   registerUser: async (req: Request, res: Response) => {
     try {
-      const { username, password, email } = req.body;
+      const { username, password, fullname, email } = req.body;
 
-      if (!username || !password || !email) {
-        return res.json(EntityResponse.error('username, password, email is required'));
+      if (!username || !password || !email || !fullname) {
+        return res.json(EntityResponse.error('username, password, fullname, email is required'));
       }
 
       const findUser = await UserModel.findOne({ username });
@@ -30,7 +29,7 @@ export const AuthController = {
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(password, salt);
 
-      const newUser = new UserModel({ username, email, password: hashed });
+      const newUser = new UserModel({ username, fullname, email, password: hashed });
       const user = await newUser.save();
 
       return res.json(EntityResponse.sucess(user));
@@ -46,23 +45,30 @@ export const AuthController = {
         return res.json(EntityResponse.error('username, password is required'));
       }
 
-      const user = await UserModel.findOne({ username });
-      if (!user) {
+      const findUser = await UserModel.findOne({ username });
+      if (!findUser) {
         return res.json(EntityResponse.error('User not found!. Username is wrong!'));
       }
+      if (!findUser.active) {
+        return res.json(
+          EntityResponse.error('User has blocked!. Please contact with Center Service!')
+        );
+      }
 
-      const validPassword = await bcrypt.compare(password, user.password);
+      const validPassword = await bcrypt.compare(password, findUser.password);
       if (!validPassword) {
         return res.json(EntityResponse.error('Password is wrong!'));
       }
 
-      const { email, id, admin } = user;
-      const token = JWT.sign({ id, username, email, admin });
-      const refreshToken = JWT.signRefresh({ id, username, email, admin });
+      const { email, id, admin, fullname, active } = findUser;
+      const token = JWT.sign({ id, username, email, admin, fullname, active });
+      const refreshToken = JWT.signRefresh({ id, username, email, admin, fullname, active });
 
-      listRefreshToken.push({ username: username, token: refreshToken });
+      // listRefreshToken.push({ username: username, token: refreshToken });
 
-      return res.json(EntityResponse.sucess({ id, username, admin, email, token, refreshToken }));
+      return res.json(
+        EntityResponse.sucess({ id, username, email, admin, fullname, active, token, refreshToken })
+      );
     } catch (error: any) {
       return res.json(EntityResponse.error(error?.message));
     }
@@ -75,7 +81,7 @@ export const AuthController = {
         return res.json(EntityResponse.error('username is required'));
       }
 
-      listRefreshToken = listRefreshToken.filter((token) => token.username !== username);
+      // listRefreshToken = listRefreshToken.filter((token) => token.username !== username);
 
       return res.json(EntityResponse.sucess());
     } catch (error: any) {

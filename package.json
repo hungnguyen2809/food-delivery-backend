@@ -8,7 +8,7 @@
   "scripts": {
     "start": "TS_NODE_BASEURL=./dist node -r tsconfig-paths/register ./dist/index.js",
     "dev": "nodemon -r tsconfig-paths/register ./index.ts",
-    "build": "tsc --project ./tsconfig.json",
+    "build": "tsc --build ./tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
